@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
-import User from "./models/User";
+import TaskModel from "./models/Task";
+import UserModel from "./models/User";
 
 export const getAllUsers = async (req: Request, res: Response) => {
-    
-  const users = await User().findAll();
+  const Task = TaskModel();
+  const User = UserModel();
+  const users = await User.findAll({
+    include: { model: Task, as: "taskData" },
+  });
 
   return res.send(users);
 };

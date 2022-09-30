@@ -1,39 +1,29 @@
 import { INTEGER, Sequelize, STRING } from "sequelize";
 import { context } from "../context";
-import Task from "./Task";
 
-const UserTable = () => {
+const Task = () => {
   const store = context.getStore();
 
   const sequelize = store?.get("sequelize") as Sequelize;
-  const User = sequelize?.define(
-    "User",
+  const table = sequelize?.define(
+    "Task",
     {
       id: {
         type: INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
-      email: {
+      userId: {
+        type: INTEGER,
+      },
+      task: {
         type: STRING,
       },
     },
     { timestamps: false }
   );
 
-  User.hasMany(Task(), {
-    foreignKey: "userId",
-    sourceKey: "id",
-    as: "taskData",
-  });
-
-  Task().belongsTo(User, {
-    foreignKey: "userId",
-    targetKey: "id",
-    as: "taskData",
-  });
-
-  return User;
+  return table;
 };
 
-export default UserTable;
+export default Task;
