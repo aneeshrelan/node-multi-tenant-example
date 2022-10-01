@@ -1,7 +1,7 @@
 import express from "express";
 import { Sequelize } from "sequelize";
 import { username, password, host } from "./config/sequelize";
-import { context } from "./context";
+import { contextInIt, storeSet } from "./context";
 import User from "./models/User";
 import { getAllUsers } from "./UserController";
 
@@ -13,13 +13,13 @@ app.get("/settings", async (req, res) => {
   return res.send(users);
 });
 
-app.use((req, res, next) => {
-  const store = new Map();
-  context.run(store, async () => {
-    store.set("request", req);
+
+app.use(async (req, res, next) => {
+  await contextInIt(async () => {
+    storeSet("request", req);
 
     const tenant = req.headers["tenant-id"] as string;
-    store.set("tenant-id", tenant);
+    storeSet("tenant-id", tenant);
 
     if (!tenant) {
       return res.send(401);
@@ -39,7 +39,7 @@ app.use((req, res, next) => {
     } catch (error) {
       console.error("Unable to connect to the database:", error);
     }
-    store.set("sequelize", sequelize);
+    storeSet("sequelize", sequelize);
 
     return next();
   });

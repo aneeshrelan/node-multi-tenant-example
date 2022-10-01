@@ -1,11 +1,10 @@
 import { INTEGER, Sequelize, STRING } from "sequelize";
-import { context } from "../context";
+import { storeGet } from "../context";
 import Task from "./Task";
 
 const UserTable = () => {
-  const store = context.getStore();
+  const sequelize = storeGet<Sequelize>("sequelize");
 
-  const sequelize = store?.get("sequelize") as Sequelize;
   const User = sequelize?.define(
     "User",
     {
