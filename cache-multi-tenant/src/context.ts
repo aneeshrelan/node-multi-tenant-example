@@ -5,7 +5,7 @@ export const context = new AsyncLocalStorage<Map<string, unknown>>();
 export const storeGet = <T>(key: string): T => {
   const store = storeOrError();
   const userDep = (store as Map<string, T>).get(key);
-  console.log({ userDep });
+
   if (!userDep) {
     throw new Error(`Value with key ${key} not registered!`);
   }

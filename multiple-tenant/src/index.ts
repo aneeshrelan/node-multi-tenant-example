@@ -3,9 +3,12 @@ import { Sequelize } from "sequelize";
 import { username, password, host } from "./config/sequelize";
 import { contextInIt, storeSet } from "./context";
 import User from "./models/User";
-import { getAllUsers } from "./UserController";
+import { getAllUsers, insertUser } from "./UserController";
 
 export const app = express();
+
+app.use(express.json())
+
 
 app.get("/settings", async (req, res) => {
   const users = await User().findAll();
@@ -13,11 +16,9 @@ app.get("/settings", async (req, res) => {
   return res.send(users);
 });
 
-
 app.use(async (req, res, next) => {
   await contextInIt(async () => {
-    storeSet("request", req);
-
+    
     const tenant = req.headers["tenant-id"] as string;
     storeSet("tenant-id", tenant);
 
@@ -46,6 +47,7 @@ app.use(async (req, res, next) => {
 });
 
 app.get("/users", getAllUsers);
+app.post("/users", insertUser);
 
 app.listen(3000, () => {
   console.log("Listening on 3000");
