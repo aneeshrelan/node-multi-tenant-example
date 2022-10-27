@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 
 import { setKeyInStore, contextInIt } from "../context";
-import { getTenantRedisClient } from "../config/redis";
+// import { getTenantRedisClient } from "../config/redis";
 import { getTenantSequelizeClient } from "../config/sequelize";
+import { loadAssociation } from "../models/User";
 
 export const apiTenantContextHandler = async (
   req: Request,
@@ -18,9 +19,10 @@ export const apiTenantContextHandler = async (
     }
     const sequelize = await getTenantSequelizeClient(tenant);
     setKeyInStore("sequelize", sequelize);
+    loadAssociation()
 
-    const redis = getTenantRedisClient(tenant);
-    setKeyInStore("redis", redis);
+    // const redis = getTenantRedisClient(tenant);
+    // setKeyInStore("redis", redis);
 
     return next();
   });

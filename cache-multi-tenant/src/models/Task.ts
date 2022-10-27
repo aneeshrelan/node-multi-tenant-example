@@ -1,10 +1,10 @@
 import { INTEGER, Sequelize, STRING } from "sequelize";
 import { getValueFromStore } from "../context";
 
-const Task = () => {
-  const sequelize = getValueFromStore<Sequelize>("sequelize");
 
-  const table = sequelize.define(
+export const defineTask = () => {
+  const sequelize = getValueFromStore<Sequelize>("sequelize");
+  sequelize.define(
     "Task",
     {
       id: {
@@ -22,7 +22,11 @@ const Task = () => {
     { timestamps: false }
   );
 
-  return table;
+}
+
+const Task = () => {
+  const sequelize = getValueFromStore<Sequelize>("sequelize");
+  return sequelize.models.Task
 };
 
 export default Task;

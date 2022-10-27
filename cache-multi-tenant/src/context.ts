@@ -25,7 +25,7 @@ export const contextInIt = <T>(cb: () => T) => {
 const getStore = () => {
   const store = context.getStore();
 
-  if (store == null) {
+  if (!store) {
     throw new Error(
       'context not registered! Consider, that you call "contextInIt" before'
     );
