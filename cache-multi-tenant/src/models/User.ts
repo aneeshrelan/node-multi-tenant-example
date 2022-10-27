@@ -1,11 +1,12 @@
 import { INTEGER, Sequelize, STRING } from "sequelize";
 import { getValueFromStore } from "../context";
-import Task from "./Task";
+import Task, { defineTask } from "./Task";
 
-const UserTable = () => {
+
+export const defineUser = () => {
   const sequelize = getValueFromStore<Sequelize>("sequelize");
 
-  const User = sequelize?.define(
+  sequelize?.define(
     "User",
     {
       id: {
@@ -20,19 +21,29 @@ const UserTable = () => {
     { timestamps: false }
   );
 
-  User.hasMany(Task(), {
+
+}
+const User = () => {
+  const sequelize = getValueFromStore<Sequelize>("sequelize");
+  return sequelize.models.User
+};
+
+
+
+export default User
+
+export const loadAssociation = () => {
+  defineUser()
+  defineTask()
+  User().hasMany(Task(), {
     foreignKey: "userId",
     sourceKey: "id",
     as: "taskData",
   });
 
-  Task().belongsTo(User, {
+  Task().belongsTo(User(), {
     foreignKey: "userId",
     targetKey: "id",
-    as: "taskData",
+    as: "userData",
   });
-
-  return User;
-};
-
-export default UserTable;
+}
