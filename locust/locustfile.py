@@ -77,12 +77,13 @@ class MySequentialTaskSet(SequentialTaskSet):
                             if resp_of_api_read.status_code == 200:
 
                                 try:
-                                    users = resp_of_api_read.json()[-1]
-                                    receivedEmail = users["email"]
+                                    users = resp_of_api_read.json()
+                                    #finalEmail == receivedEmail:
 
-                                    if finalEmail == receivedEmail:
+                                    if all(user["email"] == finalEmail for user in users): 
                                         # Avoid too much logging in load test script as it may slow it
-                                        log.info(f"SUCCESS -> Email matched")
+                                        log.info(f"SUCCESS -> All Emails Matched")
+                                        resp_of_api_read.success()
                                     else:
                                         resp_of_api_read.failure(resp_of_api_read.text)
                                 except Exception as e:
